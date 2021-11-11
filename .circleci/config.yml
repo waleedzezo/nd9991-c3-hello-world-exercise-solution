@@ -131,7 +131,7 @@ jobs:
   # aws cloudformation deploy \
   # --template-file cloudfront.yml \
   # --stack-name production-distro \
-  # --parameter-overrides PipelineID="mybucket644752792305" \ # Name of the S3 bucket you created manually.
+  # --parameter-overrides PipelineID="${S3_BUCKET_NAME}" \ # Name of the S3 bucket you created manually.
   
   # Job 1
   # Executes the bucket.yml - Deploy an S3 bucket, and interface with that bucket to synchronize the files between local and the bucket.
@@ -148,8 +148,8 @@ jobs:
             --template-file bucket.yml \
             --stack-name stack-create-bucket-${CIRCLE_WORKFLOW_ID:0:7} \
             --parameter-overrides MyBucketName="mybucket-${CIRCLE_WORKFLOW_ID:0:7}"
-      # Uncomment the step below if yoou wish to upload all contents of the current directory to the S3 bucket
-      # - run: aws s3 sync . s3://mybucket-${CIRCLE_WORKFLOW_ID:0:7} --delete
+      # Uncomment the step below if yoou wish to upload all contents of the current directory to the new S3 bucket
+       - run: aws s3 sync . s3://mybucket-${CIRCLE_WORKFLOW_ID:0:7} --delete
   
   # Exercise: Promote to Production - Job 2
   # Fetch and save the pipeline ID (bucket ID) responsible for the last release.
@@ -221,13 +221,13 @@ workflows:
       #    requires:
       #      - upload_file
       #- create_infrastructure
-      - configure_infrastructure
-      #- create_and_deploy_front_end
-      #- promote_to_production:
-      #    requires: 
-      #      - create_and_deploy_front_end
-      #- get_last_deployment_id
-      #- clean_up_old_front_end:
-      #    requires:
-      #      - get_last_deployment_id
-      #      - promote_to_production
+      #- configure_infrastructure
+      - create_and_deploy_front_end
+      - promote_to_production:
+          requires: 
+            - create_and_deploy_front_end
+      - get_last_deployment_id
+      - clean_up_old_front_end:
+          requires:
+            - get_last_deployment_id
+            - promote_to_production
