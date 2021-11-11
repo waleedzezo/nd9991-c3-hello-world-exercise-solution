@@ -61,6 +61,7 @@ Files relevant for this exercise are:
 
 Files relevant for this exercise are:
 ```bash
+├── inventory.txt
 ├── main4.yml     # Playbook file
 └── roles
     └── setup

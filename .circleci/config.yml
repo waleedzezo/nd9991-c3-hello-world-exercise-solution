@@ -92,12 +92,12 @@ jobs:
       - add_ssh_keys:
           fingerprints: ["0c:55:f7:d7:ad:e3:73:19:0b:e6:c6:46:5c:04:76:94"] # You can get this ID in the section where you registered the SSH Key
       - run:
-          name: Install dependencies
+          name: Install Ansible
           command: |
             # install the dependencies needed for your playbook
             apk add --update ansible 
       - run:
-          name: Configure server
+          name: Run Playbook and Configure server
           command: |
             ansible-playbook -i inventory.txt main4.yml
 
@@ -220,8 +220,8 @@ workflows:
       #- download_file:
       #    requires:
       #      - upload_file
-      - create_infrastructure
-      #- configure_infrastructure
+      #- create_infrastructure
+      - configure_infrastructure
       #- create_and_deploy_front_end
       #- promote_to_production:
       #    requires: 
